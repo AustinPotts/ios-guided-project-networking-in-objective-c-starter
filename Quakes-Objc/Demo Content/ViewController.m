@@ -51,6 +51,12 @@
     
     int result = addNumbers(15, 27);
     NSLog(@"Result: %d", result);
+    
+    //Creating a completion closure then calling & using your block in the response 
+    [self doWorkAndCallCompletionHandler:^(int temperature) {
+        //Update UI on main thread
+        NSLog(@"Temp: %dº", temperature);
+    }];
 }
 
 // Create an Objective C method that has a closure
