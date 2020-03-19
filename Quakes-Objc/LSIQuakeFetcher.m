@@ -8,6 +8,8 @@
 
 #import "LSIQuakeFetcher.h"
 
+static NSString *baseURLString = @"https://earthquake.usgs.gov/fdsnws/event/1/query";
+
 @implementation LSIQuakeFetcher
 
 - (void)fetchQuakesWithCompletionBlock:(LSIQuakeFetcherCompletion)completion {
@@ -24,6 +26,24 @@
 
 - (void)fetchQuakesInTimeInterval:(NSDateInterval *)timeInterval
                   completionBlock:(LSIQuakeFetcherCompletion)completion {
+    
+    // Use url componenets to build up query
+    
+    NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithString:baseURLString];
+    
+    NSISO8601DateFormatter *formatter = [[NSISO8601DateFormatter alloc] init];
+    NSString *startDateString = [formatter stringFromDate:timeInterval.startDate];
+    NSString *endDateString = [formatter stringFromDate:timeInterval.endDate];
+    
+    //Make query items
+    urlComponents.queryItems = @[
+        [NSURLQueryItem queryItemWithName:@"format" value:@"geojson"],
+        [NSURLQueryItem queryItemWithName:@"starttime" value:startDateString],
+        [NSURLQueryItem queryItemWithName:@"endtime" value:endDateString]
+    ];
+    
+    NSURL *url = urlComponents.URL;
+    NSLog(@"URL: %@", url);
     
 }
 
