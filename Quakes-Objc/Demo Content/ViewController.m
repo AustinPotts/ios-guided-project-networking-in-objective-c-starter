@@ -33,6 +33,33 @@
     
     responder.name = @"John";
     NSLog(@"name: %@", responder.name);
+    
+    //Swift Closure
+//    let addNumbers = {(a: int, b: int)-> Int in
+//         return a + b
+//    })
+    
+    // Objectvive C closure returnType (^blockName)(parameter) = ^returnType(parameters){
+    // };
+    // blockName()
+    
+    
+    // Creates a Block Syntax Closure in Objective C (anon function similar to closure in swift)
+    int (^addNumbers)(int a, int b) = ^int(int a, int b) {
+        return a + b;
+    };
+    
+    int result = addNumbers(15, 27);
+    NSLog(@"Result: %d", result);
+}
+
+// Create an Objective C method that has a closure
+//methodName:( returnType (^)(parameterTypes) )
+- (void)doWorkAndCallCompletionHandler:(void (^)(int temperature))completion {
+    // API Call to get temperature
+    NSLog(@"Getting temperature from api: ");
+    
+    completion(66);
 }
 
 
