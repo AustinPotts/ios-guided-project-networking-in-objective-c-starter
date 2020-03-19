@@ -7,6 +7,9 @@
 //
 
 #import "LSIQuakeFetcher.h"
+#import "LSIErrors.h"
+#import "LSIQuake.h"
+#import "LSIQuakeResults.h"
 
 static NSString *baseURLString = @"https://earthquake.usgs.gov/fdsnws/event/1/query";
 
@@ -45,6 +48,35 @@ static NSString *baseURLString = @"https://earthquake.usgs.gov/fdsnws/event/1/qu
     NSURL *url = urlComponents.URL;
     NSLog(@"URL: %@", url);
     
+    //Use url sessions
+    NSURLSessionDataTask *task = [NSURLSession.sharedSession dataTaskWithURL:url
+                                                           completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+        
+        if (!data) {
+            NSError *dataError = errorWithMessage(@"Data is nil from API Response", 1002);
+            completion(nil, dataError);
+            return;
+        }
+        
+        NSError *jsonError = nil; // no error before API call, clean slate
+        
+        NSDictionary *quakeDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+        
+        if (jsonError) { // if json error is no longer nil then we have a problem
+            completion(nil, jsonError);
+            return;
+        }
+        
+        //Decode the JSOn using model object
+        LSIQuakeResults *quakeResults = [[LSIQuakeResults alloc] initWithDictionary:quakeDictionary];
+        completion(quakeResults.quakes, nil);
+        
+    }];
+    [task resume];
 }
 
 
