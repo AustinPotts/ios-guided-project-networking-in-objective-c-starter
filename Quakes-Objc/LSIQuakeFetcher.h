@@ -24,8 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 //                  completionBlock:(void (^)(NSArray<LSIQuake *> *quakes, NSError *error))completion;
 
 
-- (void)fetchQuakesWithCompletionBlock:(NSDateInterval *)timeInterval
-completionBlock:(void (^)(NSArray<LSIQuake *> *quakes, NSError *error))completion;
+- (void)fetchQuakesWithCompletionBlock:(LSIQuakeFetcherCompletion)completion;
     
 
 
